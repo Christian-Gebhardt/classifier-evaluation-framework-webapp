@@ -1,23 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
+import { AppBar, Toolbar, Typography, Link, Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import HomeView from "./views/HomeView";
+import TutorialView from "./views/TutorialView";
+import AboutView from "./views/AboutView";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > * + *": {
+      marginLeft: theme.spacing(8),
+    },
+  },
+}));
 
 function App() {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <AppBar color="primary" position="static">
+        <Toolbar className="navbar">
+          <Box className="title-container">
+            <Typography variant="h6" className="title" align="center">
+              Evaluation von Klassifikatoren
+            </Typography>
+          </Box>
+          <Box className="link-container">
+            <Typography className={classes.root}>
+              <Link href="/" color="inherit">
+                Home
+              </Link>
+              <Link href="/tutorial" color="inherit">
+                Tutorial
+              </Link>
+              <Link href="/about" color="inherit">
+                Projekt
+              </Link>
+            </Typography>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <HomeView />
+          </Route>
+          <Route path="/tutorial">
+            <TutorialView />
+          </Route>
+          <Route path="/about">
+            <AboutView />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
