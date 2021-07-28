@@ -19,6 +19,8 @@ export default function HomeView() {
   const [comparisonResults, setComparisonResults] = useState();
   const [comparisonDetailed, setComparisonDetailed] = useState();
 
+  const [rocAnalysis, setRocAnalysis] = useState();
+
   const handleViewChange = (e, newValue) => {
     e.preventDefault();
     setView(newValue);
@@ -50,6 +52,7 @@ export default function HomeView() {
           setMetrics={setMetrics}
           setComparisonResults={setComparisonResults}
           setComparisonDetailed={setComparisonDetailed}
+          setRocAnalysis={setRocAnalysis}
           setView={setView}
         />
       )}
@@ -58,6 +61,7 @@ export default function HomeView() {
           evaluationResults={evaluationResults}
           evaluationConfusionMatrices={evaluationConfusionMatrices}
           evaluationClassificationReports={evaluationClassificationReports}
+          rocAnalysis={rocAnalysis}
           classifiers={classifiers}
         />
       )}

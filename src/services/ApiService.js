@@ -6,11 +6,21 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-export function getEvaluationForInput(yTrue, yPred, metrics) {
+export function getEvaluationForInput(
+  yTrue,
+  yPred,
+  metrics,
+  metricType,
+  rocAnalysis
+) {
   let formData = new FormData();
   formData.append("y_true", yTrue);
   formData.append("y_pred", yPred);
+  formData.append("metricType", metricType);
   metrics.forEach((item) => formData.append("metrics[]", item));
+  if (rocAnalysis) {
+    formData.append("roc", rocAnalysis);
+  }
 
   const res = api
     .post(`/evaluate`, formData)

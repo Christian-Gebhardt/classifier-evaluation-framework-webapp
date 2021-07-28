@@ -40,6 +40,7 @@ export default function TabPanelInputViewOwn({
   setEvaluationResults,
   setEvaluationConfusionMatrices,
   setEvaluationClassificationReports,
+  setRocAnalysisRes,
   setClassifiers,
   setView,
 }) {
@@ -47,6 +48,8 @@ export default function TabPanelInputViewOwn({
 
   const [yTrue, setYTrue] = useState();
   const [yPred, setYPred] = useState();
+
+  const [rocAnalysis, setRocAnalysis] = useState(false);
 
   const [checkedMetricsBinary, setCheckedMetricsBinary] = useState({
     acc: false,
@@ -77,7 +80,19 @@ export default function TabPanelInputViewOwn({
   const checkedMetricsErrorMultinomial =
     Object.values(checkedMetricsMultinomial).filter((v) => v).length < 1;
 
+  const [checkedMetricsProbabilistic, setCheckedMetricsProbabilistic] =
+    useState({
+      lgl: false,
+    });
+
+  const { lgl } = checkedMetricsProbabilistic;
+
+  const checkedMetricsErrorProbabilistic =
+    Object.values(checkedMetricsProbabilistic).filter((v) => v).length < 1;
+
   const [targetType, setTargetType] = useState("binary");
+
+  const [metricType, setMetricType] = useState("qualitative");
 
   const handleBinaryMetricsCheckboxChange = (event) => {
     setCheckedMetricsBinary({
@@ -93,8 +108,23 @@ export default function TabPanelInputViewOwn({
     });
   };
 
+  const handleProbabilisticMetricsCheckboxChange = (event) => {
+    setCheckedMetricsProbabilistic({
+      ...checkedMetricsProbabilistic,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
   const handleTargetTypeRadioChange = (event) => {
     setTargetType(event.target.value);
+  };
+
+  const handleMetricTypeRadioChange = (event) => {
+    setMetricType(event.target.value);
+  };
+
+  const handleRocAnalysisCheckboxChange = (event) => {
+    setRocAnalysis(event.target.checked);
   };
 
   const handleSubmit = async (e) => {
@@ -106,14 +136,20 @@ export default function TabPanelInputViewOwn({
       .files[0];
 
     const metrics = [];
-    if (targetType === "binary") {
+    if (targetType === "binary" && metricType === "qualitative") {
       for (const [key, value] of Object.entries(checkedMetricsBinary)) {
         if (value) {
           metrics.push(key.toString());
         }
       }
-    } else if (targetType === "multinomial") {
+    } else if (targetType === "multinomial" && metricType === "qualitative") {
       for (const [key, value] of Object.entries(checkedMetricsMultinomial)) {
+        if (value) {
+          metrics.push(key.toString());
+        }
+      }
+    } else if (metricType === "probabilistic") {
+      for (const [key, value] of Object.entries(checkedMetricsProbabilistic)) {
         if (value) {
           metrics.push(key.toString());
         }
@@ -125,13 +161,20 @@ export default function TabPanelInputViewOwn({
     console.log(yTrueFile, yPredFile, metrics);
 
     // API call
-    const resInput = await getEvaluationForInput(yTrueFile, yPredFile, metrics);
+    const resInput = await getEvaluationForInput(
+      yTrueFile,
+      yPredFile,
+      metrics,
+      metricType,
+      rocAnalysis
+    );
 
     console.log(resInput);
 
     setEvaluationResults(resInput.results);
     setEvaluationConfusionMatrices(resInput.cnf_matrices);
     setEvaluationClassificationReports(resInput.clf_reports);
+    setRocAnalysisRes(resInput.roc_analysis);
 
     // Resetting forms and state values
     document.getElementById("evaluation-input-form").reset();
@@ -219,7 +262,31 @@ export default function TabPanelInputViewOwn({
                 </FormHelperText>
               </FormControl>
             </div>
-            {targetType === "binary" && (
+            <div className={classes.root}>
+              <FormControl component="fieldset" className={classes.formControl}>
+                <FormLabel component="legend">Art der Metriken</FormLabel>
+                <RadioGroup
+                  name="metricType"
+                  value={metricType}
+                  onChange={handleMetricTypeRadioChange}
+                >
+                  <FormControlLabel
+                    value="qualitative"
+                    control={<Radio />}
+                    label="qualitativ"
+                  />
+                  <FormControlLabel
+                    value="probabilistic"
+                    control={<Radio />}
+                    label="probabilistisch"
+                  />
+                </RadioGroup>
+                <FormHelperText>
+                  Wird benötigt um geeignete Metriken zu wählen
+                </FormHelperText>
+              </FormControl>
+            </div>
+            {targetType === "binary" && metricType === "qualitative" && (
               <div className={classes.root}>
                 <FormControl
                   required
@@ -291,7 +358,7 @@ export default function TabPanelInputViewOwn({
                 </FormControl>
               </div>
             )}
-            {targetType === "multinomial" && (
+            {targetType === "multinomial" && metricType === "qualitative" && (
               <div className={classes.root}>
                 <FormControl
                   required
@@ -383,6 +450,60 @@ export default function TabPanelInputViewOwn({
                     Mindestens eine Metrik auswählen.
                   </FormHelperText>
                 </FormControl>
+              </div>
+            )}
+            {metricType === "probabilistic" && (
+              <div>
+                <div className={classes.root}>
+                  <FormControl
+                    required
+                    component="fieldset"
+                    className={classes.formControl}
+                  >
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={handleRocAnalysisCheckboxChange}
+                            color="primary"
+                            checked={rocAnalysis}
+                            name="rocAnalysis"
+                          />
+                        }
+                        label="ROC Analyse"
+                      />
+                    </FormGroup>
+                    <FormHelperText>
+                      y_pred muss probabilistische Werte enthalten.
+                    </FormHelperText>
+                  </FormControl>
+                </div>
+                <div className={classes.root}>
+                  <FormControl
+                    required
+                    error={checkedMetricsErrorProbabilistic}
+                    component="fieldset"
+                    className={classes.formControl}
+                  >
+                    <FormLabel component="legend">Metriken auswählen</FormLabel>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={handleProbabilisticMetricsCheckboxChange}
+                            color="primary"
+                            checked={lgl}
+                            name="lgl"
+                          />
+                        }
+                        label="Log Loss (lgl)"
+                      />
+                    </FormGroup>
+                    <FormHelperText>
+                      Mindestens eine Metrik auswählen.
+                    </FormHelperText>
+                  </FormControl>
+                </div>
               </div>
             )}
             <Button

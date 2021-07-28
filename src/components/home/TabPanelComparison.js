@@ -72,7 +72,7 @@ export default function TabPanelComparison({
             <BarChart width={500} height={250} data={results}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis />
+              <YAxis type="number" domain={[0, 1]} />
               <Tooltip />
               <Legend />
               {classifierNames.map((name, index) => {
@@ -80,6 +80,7 @@ export default function TabPanelComparison({
                   <Bar
                     key={index}
                     dataKey={`score_clf_${name}`}
+                    maxBarSize={100}
                     fill={getFillColor(name)}
                   />
                 );

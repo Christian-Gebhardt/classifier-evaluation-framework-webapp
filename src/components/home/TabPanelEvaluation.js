@@ -20,6 +20,8 @@ import {
   Tooltip,
   Legend,
   Bar,
+  Line,
+  LineChart,
 } from "recharts";
 
 const useStyles = makeStyles({
@@ -67,11 +69,51 @@ function makeHeadersClfReport(clf_reports) {
   }
 }
 
+function getFillColor(name) {
+  switch (name) {
+    case "own":
+      return "#4266f5";
+    case "sgd":
+      return "#f59e42";
+    case "gnb":
+      return "#42f5b3";
+    case "dct":
+      return "#f5424e";
+    case "rfo":
+      return "#fcba03";
+    case "nnm":
+      return "#8c03fc";
+    default:
+      return "#666057";
+  }
+}
+
+function getLineColor(i) {
+  const n = i % 5;
+  switch (n) {
+    case 0:
+      return "#1b4ac2";
+    case 1:
+      return "#de7812";
+    case 2:
+      return "#08a630";
+    case 3:
+      return "#f5424e";
+    case 4:
+      return "#fcba03";
+    case 5:
+      return "#8c03fc";
+    default:
+      return "#666057";
+  }
+}
+
 export default function TabPanelEvaluation({
   evaluationResults,
   evaluationConfusionMatrices,
   evaluationClassificationReports,
   classifiers,
+  rocAnalysis,
 }) {
   const classes = useStyles();
 
@@ -79,6 +121,9 @@ export default function TabPanelEvaluation({
   const [cnfMatrices] = useState(evaluationConfusionMatrices);
   const [classificationReports] = useState(evaluationClassificationReports);
   const [classifierNames] = useState(classifiers);
+  const [roc] = useState(rocAnalysis);
+
+  console.log(rocAnalysis);
 
   const headersClfReport = makeHeadersClfReport(
     evaluationClassificationReports
@@ -86,34 +131,20 @@ export default function TabPanelEvaluation({
 
   const rowsClfReport = makeRowsClfReport(evaluationClassificationReports);
 
-  const getFillColor = (name) => {
-    switch (name) {
-      case "own":
-        return "#4266f5";
-      case "sgd":
-        return "#f59e42";
-      case "gnb":
-        return "#42f5b3";
-      case "dct":
-        return "#f5424e";
-      case "rfo":
-        return "#fcba03";
-      case "nnm":
-        return "#8c03fc";
-      default:
-        return "#666057";
-    }
-  };
-
   return (
     <Box m={2} ml={12} mr={12}>
       <Paper elevation={2}>
         {data ? (
           <Box justifyContent="center">
-            <BarChart width={500} height={250} data={data}>
+            <BarChart
+              width={500}
+              height={400}
+              data={data}
+              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="metric" />
-              <YAxis />
+              <YAxis type="number" domain={[0, 1]} />
               <Tooltip />
               <Legend />
               {classifierNames.map((name, index) => {
@@ -121,11 +152,61 @@ export default function TabPanelEvaluation({
                   <Bar
                     key={index}
                     dataKey={`score_clf_${name}`}
+                    maxBarSize={100}
                     fill={getFillColor(name)}
                   />
                 );
               })}
             </BarChart>
+            {roc && (
+              <LineChart
+                width={500}
+                height={400}
+                margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+              >
+                <XAxis
+                  dataKey="fpr"
+                  label={{
+                    value: "FPR",
+                    position: "bottom",
+                    offset: 20,
+                  }}
+                  type="number"
+                  domain={[0, 1]}
+                />
+                <YAxis
+                  type="number"
+                  label={{ value: "TPR", angle: -90, position: "left" }}
+                  domain={[0, 1]}
+                />
+                <CartesianGrid strokeDasharray="3 3" />
+                <Tooltip />
+                <Legend />
+                <Line
+                  data={[
+                    { fpr: 0, tpr: 0 },
+                    { fpr: 1, tpr: 1 },
+                  ]}
+                  name="--"
+                  legendType="none"
+                  dataKey="tpr"
+                  type="monotone"
+                  stroke="#8884d8"
+                  strokeDasharray="3 3"
+                />
+                {roc.roc.map((item, i) => (
+                  <Line
+                    data={item}
+                    key={i}
+                    name={`class_${i}`}
+                    type="step"
+                    dataKey="tpr"
+                    strokeWidth={3}
+                    stroke={getLineColor(i)}
+                  />
+                ))}
+              </LineChart>
+            )}
             {"clf_report_own" in classificationReports && (
               <TableContainer className={classes.tablePaper} component={Paper}>
                 <Table className={classes.tableClfReport}>

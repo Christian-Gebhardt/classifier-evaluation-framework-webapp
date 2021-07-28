@@ -32,6 +32,7 @@ export default function TabPanelInput(props) {
           setEvaluationClassificationReports={
             props.setEvaluationClassificationReports
           }
+          setRocAnalysisRes={props.setRocAnalysis}
           setClassifiers={props.setClassifiers}
           setView={props.setView}
         />
