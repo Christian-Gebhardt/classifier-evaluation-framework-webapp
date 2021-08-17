@@ -29,13 +29,33 @@ export function getEvaluationForInput(
   return res ? res : undefined;
 }
 
-export function getComparison(dataset, indices, yPred, classifiers, metrics) {
+export function getComparison(
+  dataset,
+  indices,
+  yPred,
+  classifiers,
+  metrics,
+  classifierSettings
+) {
   let formData = new FormData();
   formData.append("dataset", dataset);
-  formData.append("y_pred", yPred);
-  formData.append("train_test_indices", indices);
+  if (yPred != null) {
+    formData.append("y_pred", yPred);
+  }
+  if (indices != null) {
+    formData.append("train_test_indices", indices);
+  }
   metrics.forEach((item) => formData.append("metrics[]", item));
   classifiers.forEach((item) => formData.append("classifiers[]", item));
+
+  for (let clf in classifierSettings) {
+    for (let attr in classifierSettings[clf]) {
+      formData.append(
+        `classifier_settings.${clf}.${attr}`,
+        classifierSettings[clf][attr]
+      );
+    }
+  }
 
   const res = api
     .post(`/compare`, formData)

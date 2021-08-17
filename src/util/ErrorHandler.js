@@ -1,4 +1,4 @@
 export function handleError(err) {
-  console.error(err);
+  alert(err);
   return undefined;
 }

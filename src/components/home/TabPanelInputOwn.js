@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
       margin: "4px",
     },
   },
+  inputForm: {
+    paddingTop: "10px",
+  },
   input: {
     display: "none",
   },
@@ -192,8 +195,12 @@ export default function TabPanelInputViewOwn({
   return (
     <Box m={2} ml={12} mr={12}>
       <Paper elevation={2}>
-        <Box>
-          <form id="evaluation-input-form" onSubmit={(e) => handleSubmit(e)}>
+        <Box className={classes.inputForm}>
+          <form
+            className={classes.inputForm}
+            id="evaluation-input-form"
+            onSubmit={(e) => handleSubmit(e)}
+          >
             <div className={classes.root}>
               <label>Ergebnisvektor (y_true)</label>
               <input
@@ -216,7 +223,7 @@ export default function TabPanelInputViewOwn({
               </label>
             </div>
             <div className={classes.root}>
-              <label>Ergebnisvektor (y_pred):</label>
+              <label>Ergebnisvektor (y_pred)</label>
               <input
                 className={classes.input}
                 id="icon-button-file-yPred"

@@ -7,9 +7,9 @@ import TabPanelInputComparison from "./TabPanelInputComparison";
 export default function TabPanelInput(props) {
   const [view, setView] = useState(0);
 
-  const handleViewChange = (e, newValue) => {
+  const handleViewChange = (e, value) => {
     e.preventDefault();
-    setView(newValue);
+    setView(value);
   };
   return (
     <div>

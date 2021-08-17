@@ -23,6 +23,17 @@ import {
 } from "recharts";
 
 const useStyles = makeStyles({
+  paper: {
+    minHeight: 600,
+  },
+  errorText: {
+    paddingTop: "20px",
+  },
+  barChart: {
+    display: "flex",
+    justifyContent: "center",
+    paddingTop: "20px",
+  },
   tableClfReport: {
     minWidth: 650,
   },
@@ -66,26 +77,33 @@ export default function TabPanelComparison({
 
   return (
     <Box m={2} ml={12} mr={12}>
-      <Paper elevation={2}>
+      <Paper elevation={2} className={classes.paper}>
         {results ? (
-          <Box justifyContent="center">
-            <BarChart width={500} height={250} data={results}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis type="number" domain={[0, 1]} />
-              <Tooltip />
-              <Legend />
-              {classifierNames.map((name, index) => {
-                return (
-                  <Bar
-                    key={index}
-                    dataKey={`score_clf_${name}`}
-                    maxBarSize={100}
-                    fill={getFillColor(name)}
-                  />
-                );
-              })}
-            </BarChart>
+          <Box>
+            <Box className={classes.barChart}>
+              <BarChart
+                width={500}
+                height={250}
+                data={results}
+                justifyContent="center"
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis type="number" domain={[0, 1]} />
+                <Tooltip />
+                <Legend />
+                {classifierNames.map((name, index) => {
+                  return (
+                    <Bar
+                      key={index}
+                      dataKey={`score_clf_${name}`}
+                      maxBarSize={100}
+                      fill={getFillColor(name)}
+                    />
+                  );
+                })}
+              </BarChart>
+            </Box>
             {detailedCV &&
               classifierNames.map((clf, i) => {
                 return (
@@ -125,7 +143,9 @@ export default function TabPanelComparison({
               })}
           </Box>
         ) : (
-          <Typography>Bitte Eingabe ausfüllen.</Typography>
+          <Typography className={classes.errorText}>
+            Bitte Eingabe ausfüllen.
+          </Typography>
         )}
       </Paper>
     </Box>

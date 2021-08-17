@@ -11,6 +11,10 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import {
   BarChart,
@@ -25,6 +29,21 @@ import {
 } from "recharts";
 
 const useStyles = makeStyles({
+  paper: {
+    minHeight: 600,
+  },
+  errorText: {
+    paddingTop: "20px",
+  },
+  charts: {
+    display: "flex",
+    justifyContent: "space-around",
+    paddingTop: "20px",
+  },
+  infoBox: {
+    padding: "10px",
+    margin: "15px",
+  },
   tableClfReport: {
     minWidth: 650,
   },
@@ -66,6 +85,15 @@ function makeRowsClfReport(clf_reports) {
 function makeHeadersClfReport(clf_reports) {
   if (clf_reports !== undefined && "clf_report_own" in clf_reports) {
     return Object.keys(clf_reports["clf_report_own"]["macro avg"]);
+  }
+}
+
+function getThresholdsAsString(roc, cls) {
+  if (roc !== undefined) {
+    var thresholds = roc.roc[cls].map((values) =>
+      values["threshold"].toFixed(8).toString()
+    );
+    return thresholds.join(", ");
   }
 }
 
@@ -133,79 +161,104 @@ export default function TabPanelEvaluation({
 
   return (
     <Box m={2} ml={12} mr={12}>
-      <Paper elevation={2}>
+      <Paper elevation={2} className={classes.paper}>
         {data ? (
-          <Box justifyContent="center">
-            <BarChart
-              width={500}
-              height={400}
-              data={data}
-              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="metric" />
-              <YAxis type="number" domain={[0, 1]} />
-              <Tooltip />
-              <Legend />
-              {classifierNames.map((name, index) => {
-                return (
-                  <Bar
-                    key={index}
-                    dataKey={`score_clf_${name}`}
-                    maxBarSize={100}
-                    fill={getFillColor(name)}
-                  />
-                );
-              })}
-            </BarChart>
-            {roc && (
-              <LineChart
-                width={500}
-                height={400}
+          <Box>
+            <Box className={classes.charts}>
+              <BarChart
+                width={350}
+                height={250}
+                data={data}
                 margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
               >
-                <XAxis
-                  dataKey="fpr"
-                  label={{
-                    value: "FPR",
-                    position: "bottom",
-                    offset: 20,
-                  }}
-                  type="number"
-                  domain={[0, 1]}
-                />
-                <YAxis
-                  type="number"
-                  label={{ value: "TPR", angle: -90, position: "left" }}
-                  domain={[0, 1]}
-                />
                 <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="metric" />
+                <YAxis type="number" domain={[0, 1]} />
                 <Tooltip />
                 <Legend />
-                <Line
-                  data={[
-                    { fpr: 0, tpr: 0 },
-                    { fpr: 1, tpr: 1 },
-                  ]}
-                  name="--"
-                  legendType="none"
-                  dataKey="tpr"
-                  type="monotone"
-                  stroke="#8884d8"
-                  strokeDasharray="3 3"
-                />
-                {roc.roc.map((item, i) => (
-                  <Line
-                    data={item}
-                    key={i}
-                    name={`class_${i}`}
-                    type="step"
-                    dataKey="tpr"
-                    strokeWidth={3}
-                    stroke={getLineColor(i)}
+                {classifierNames.map((name, index) => {
+                  return (
+                    <Bar
+                      key={index}
+                      dataKey={`score_clf_${name}`}
+                      maxBarSize={100}
+                      fill={getFillColor(name)}
+                    />
+                  );
+                })}
+              </BarChart>
+              {roc && (
+                <LineChart
+                  width={350}
+                  height={250}
+                  margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+                >
+                  <XAxis
+                    dataKey="fpr"
+                    label={{
+                      value: "FPR",
+                      position: "bottom",
+                      offset: 20,
+                    }}
+                    type="number"
+                    domain={[0, 1]}
                   />
-                ))}
-              </LineChart>
+                  <YAxis
+                    type="number"
+                    label={{ value: "TPR", angle: -90, position: "left" }}
+                    domain={[0, 1]}
+                  />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    data={[
+                      { fpr: 0, tpr: 0 },
+                      { fpr: 1, tpr: 1 },
+                    ]}
+                    name="--"
+                    legendType="none"
+                    dataKey="tpr"
+                    type="monotone"
+                    stroke="#8884d8"
+                    strokeDasharray="3 3"
+                  />
+                  {roc.roc.map((item, i) => (
+                    <Line
+                      data={item}
+                      key={i}
+                      name={`class_${i}`}
+                      type="step"
+                      dataKey="tpr"
+                      strokeWidth={3}
+                      stroke={getLineColor(i)}
+                    />
+                  ))}
+                </LineChart>
+              )}
+            </Box>
+            {roc && (
+              <Box className={classes.infoBox} boxShadow={2} component={Paper}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="h6">Verwendete Thresholds:</Typography>
+                    <div>
+                      <List>
+                        {roc.roc.map((classes, i) => (
+                          <ListItem key={i}>
+                            <ListItemText
+                              primary={`class ${i}: ${getThresholdsAsString(
+                                roc,
+                                i
+                              )}`}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </div>
+                  </Grid>
+                </Grid>
+              </Box>
             )}
             {"clf_report_own" in classificationReports && (
               <TableContainer className={classes.tablePaper} component={Paper}>
@@ -282,7 +335,9 @@ export default function TabPanelEvaluation({
             )}
           </Box>
         ) : (
-          <Typography>Bitte Eingabe ausfüllen.</Typography>
+          <Typography className={classes.errorText}>
+            Bitte Eingabe ausfüllen.
+          </Typography>
         )}
       </Paper>
     </Box>
