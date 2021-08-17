@@ -14,9 +14,10 @@ import {
   Checkbox,
   Radio,
   RadioGroup,
+  Tooltip,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import { CloudUpload, Send } from "@material-ui/icons";
+import { makeStyles, withStyles } from "@material-ui/styles";
+import { CloudUpload, Send, InfoOutlined } from "@material-ui/icons";
 import { getEvaluationForInput } from "../../services/ApiService";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +38,20 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: "15px",
   },
+  infoButton: {
+    marginBottom: "6px",
+  },
 }));
+
+const HtmlTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: "#f5f5f9",
+    color: "rgba(0, 0, 0, 0.87)",
+    maxWidth: 220,
+    fontSize: "10px",
+    border: "1px solid #dadde9",
+  },
+}))(Tooltip);
 
 export default function TabPanelInputViewOwn({
   setEvaluationResults,
@@ -202,7 +216,31 @@ export default function TabPanelInputViewOwn({
             onSubmit={(e) => handleSubmit(e)}
           >
             <div className={classes.root}>
-              <label>Ergebnisvektor (y_true)</label>
+              <label>Labelvektor (y_true) </label>
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color="inherit">Labelvektor y_true</Typography>
+                    <b>{"Dateiformat: "}</b>
+                    <em>{"npy (numpy matrix format)"}</em>
+                    <br />
+                    <b>{"Matrix Format: "}</b>
+                    <em>{"nx1"}</em>
+                    <br />
+                    <b>{"Beschreibung: "}</b>
+                    <em>{"Vektor der alle wahren Labelwerte enthält."}</em>
+                  </React.Fragment>
+                }
+              >
+                <IconButton
+                  className={classes.infoButton}
+                  color="default"
+                  component="span"
+                  size="small"
+                >
+                  <InfoOutlined />
+                </IconButton>
+              </HtmlTooltip>
               <input
                 className={classes.input}
                 id="icon-button-file-yTrue"
@@ -213,17 +251,47 @@ export default function TabPanelInputViewOwn({
                 <Typography>
                   {yTrue ? yTrue.name : "Bitte auswählen"}
                 </Typography>
-                <IconButton
-                  color="default"
-                  aria-label="upload picture"
-                  component="span"
-                >
+                <IconButton color="default" component="span">
                   <CloudUpload />
                 </IconButton>
               </label>
             </div>
             <div className={classes.root}>
               <label>Ergebnisvektor (y_pred)</label>
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color="inherit">
+                      Ergebnisvektor y_pred
+                    </Typography>
+                    <b>{"Dateiformat: "}</b>
+                    <em>{"npy (numpy matrix format)"}</em>
+                    <br />
+                    <b>{"Matrix Format: "}</b>
+                    <em>
+                      {
+                        "nx1 bzw. nxc (n Ergebnisse/Wahrscheinlichkeiten, c Klassen)"
+                      }
+                    </em>
+                    <br />
+                    <b>{"Beschreibung: "}</b>
+                    <em>
+                      {
+                        "Vektor der alle vorhergesagten Labelwerte bzw. die probabilistischen Werte des Klassifikators enthält. Falls probabilistische Werte gewählt werden müssen auch probabilitische Metriken gewählt werden."
+                      }
+                    </em>
+                  </React.Fragment>
+                }
+              >
+                <IconButton
+                  className={classes.infoButton}
+                  color="default"
+                  component="span"
+                  size="small"
+                >
+                  <InfoOutlined />
+                </IconButton>
+              </HtmlTooltip>
               <input
                 className={classes.input}
                 id="icon-button-file-yPred"
@@ -234,11 +302,7 @@ export default function TabPanelInputViewOwn({
                 <Typography>
                   {yPred ? yPred.name : "Bitte auswählen"}
                 </Typography>
-                <IconButton
-                  color="default"
-                  aria-label="upload picture"
-                  component="span"
-                >
+                <IconButton color="default" component="span">
                   <CloudUpload />
                 </IconButton>
               </label>

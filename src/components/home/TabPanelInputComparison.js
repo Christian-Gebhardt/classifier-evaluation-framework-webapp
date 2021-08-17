@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles, withStyles } from "@material-ui/styles";
 import {
   Paper,
   Box,
@@ -23,9 +23,10 @@ import {
   MenuItem,
   InputLabel,
   TextField,
+  Tooltip,
 } from "@material-ui/core";
 
-import { CloudUpload, Send, Settings } from "@material-ui/icons";
+import { CloudUpload, Send, Settings, InfoOutlined } from "@material-ui/icons";
 import { getComparison } from "../../services/ApiService";
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +72,20 @@ const useStyles = makeStyles((theme) => ({
   textFieldClassifierSettings: {
     margin: "15px",
   },
+  infoButton: {
+    marginBottom: "6px",
+  },
 }));
+
+const HtmlTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: "#f5f5f9",
+    color: "rgba(0, 0, 0, 0.87)",
+    maxWidth: 220,
+    fontSize: "10px",
+    border: "1px solid #dadde9",
+  },
+}))(Tooltip);
 
 export default function TabPanelInputComparison({
   setComparisonResults,
@@ -312,6 +326,42 @@ export default function TabPanelInputComparison({
           <form id="comparison-input-form" onSubmit={(e) => handleSubmit(e)}>
             <div className={classes.root}>
               <label>Datensatz</label>
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color="inherit">Datensatz</Typography>
+                    <b>{"Dateiformat: "}</b>
+                    <em>
+                      {
+                        "csv (comma seperated values) oder npy (numpy matrix format)"
+                      }
+                    </em>
+                    <br />
+                    <b>{"Matrix Format: "}</b>
+                    <em>
+                      {
+                        "nxm (n Instanzen, m-1 features, 1 label; es wird angenommen, dass die Labels in der letzen Spalte stehen; falls der Dateityp csv gewählt wird, so wird angenommen, dass die erste Zeile der header ist, diese wird nicht betrachtet)"
+                      }
+                    </em>
+                    <br />
+                    <b>{"Beschreibung: "}</b>
+                    <em>
+                      {
+                        "Datensatz zum trainieren von Vergleichsklassifikatoren."
+                      }
+                    </em>
+                  </React.Fragment>
+                }
+              >
+                <IconButton
+                  className={classes.infoButton}
+                  color="default"
+                  component="span"
+                  size="small"
+                >
+                  <InfoOutlined />
+                </IconButton>
+              </HtmlTooltip>
               <input
                 className={classes.input}
                 id="icon-button-file-dataset"
@@ -335,6 +385,44 @@ export default function TabPanelInputComparison({
             </div>
             <div className={classes.root}>
               <label>Trainings-/Testindices</label>
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color="inherit">
+                      Trainings-/Testindices
+                    </Typography>
+                    <b>{"Dateiformat: "}</b>
+                    <em>{"npz (numpy zipped matrix format)"}</em>
+                    <br />
+                    <b>{"Format: "}</b> <br />
+                    <em>
+                      {"keys: 'trainings_indices', 'test_indices'"}
+                      <br />
+                      {
+                        "trainings_indices: kxn (n Sets, mit jeweils n Instanzen)"
+                      }
+                      <br />
+                      {"test_indices: kxm (n Sets, mit jeweils k Instanzen)"}
+                    </em>
+                    <br />
+                    <b>{"Beschreibung: "}</b>
+                    <em>
+                      {
+                        "Trainings- und Testindices der k-fold cross validation Methode, mit welchen der eigene Klassifikator und Vergleichsklassifikatoren trainiert und getestet wurde/werden. "
+                      }
+                    </em>
+                  </React.Fragment>
+                }
+              >
+                <IconButton
+                  className={classes.infoButton}
+                  color="default"
+                  component="span"
+                  size="small"
+                >
+                  <InfoOutlined />
+                </IconButton>
+              </HtmlTooltip>
               <input
                 className={classes.input}
                 id="icon-button-file-indices"
@@ -358,6 +446,36 @@ export default function TabPanelInputComparison({
             </div>
             <div className={classes.root}>
               <label>Ergebnisvektor (y_pred)</label>
+              <HtmlTooltip
+                title={
+                  <React.Fragment>
+                    <Typography color="inherit">
+                      Ergebnisvektor y_pred
+                    </Typography>
+                    <b>{"Dateiformat: "}</b>
+                    <em>{"npy (numpy matrix format)"}</em>
+                    <br />
+                    <b>{"Matrixformat: "}</b>
+                    <em>{"kxn (k Sets mit jeweils n Ergebnissen"}</em>
+                    <br />
+                    <b>{"Beschreibung: "}</b>
+                    <em>
+                      {
+                        "Ergebnisse des eigenen Klassifikators auf den Sets der k-fold cross validation."
+                      }
+                    </em>
+                  </React.Fragment>
+                }
+              >
+                <IconButton
+                  className={classes.infoButton}
+                  color="default"
+                  component="span"
+                  size="small"
+                >
+                  <InfoOutlined />
+                </IconButton>
+              </HtmlTooltip>
               <input
                 className={classes.input}
                 id="icon-button-file-yPred"

@@ -40,6 +40,13 @@ const useStyles = makeStyles({
     justifyContent: "space-around",
     paddingTop: "20px",
   },
+  listContainer: {
+    justifyContent: "center",
+  },
+  gridItem: {
+    margin: "10px",
+    padding: "5px",
+  },
   infoBox: {
     padding: "10px",
     margin: "15px",
@@ -50,9 +57,12 @@ const useStyles = makeStyles({
   tablePaper: {
     marginTop: "25px",
   },
-
   tableCnfMatrix: {
     width: "50%",
+  },
+  centeredList: {
+    display: "flex",
+    justifyContent: "center",
   },
 });
 
@@ -238,9 +248,16 @@ export default function TabPanelEvaluation({
               )}
             </Box>
             {roc && (
-              <Box className={classes.infoBox} boxShadow={2} component={Paper}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
+              <Box className={classes.infoBox}>
+                <Grid className={classes.listContainer} container spacing={2}>
+                  <Grid
+                    className={classes.gridItem}
+                    item
+                    xs={10}
+                    md={5}
+                    boxShadow={2}
+                    component={Paper}
+                  >
                     <Typography variant="h6">Verwendete Thresholds:</Typography>
                     <div>
                       <List>
@@ -255,6 +272,31 @@ export default function TabPanelEvaluation({
                           </ListItem>
                         ))}
                       </List>
+                    </div>
+                  </Grid>
+                  <Grid
+                    className={classes.gridItem}
+                    item
+                    xs={10}
+                    md={5}
+                    boxShadow={2}
+                    component={Paper}
+                  >
+                    <Typography variant="h6">AUC Score:</Typography>
+                    <div>
+                      <Box className={classes.centeredList}>
+                        <List>
+                          {Object.keys(roc.roc_auc).map((k) => (
+                            <ListItem key={k}>
+                              <ListItemText
+                                primary={`class ${k}: ${roc.roc_auc[k]
+                                  .toFixed(2)
+                                  .toString()}`}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
                     </div>
                   </Grid>
                 </Grid>
