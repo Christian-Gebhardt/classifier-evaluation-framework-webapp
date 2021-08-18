@@ -175,10 +175,8 @@ export default function TabPanelInputViewOwn({
 
     setClassifiers(["own"]);
 
-    console.log(yTrueFile, yPredFile, metrics);
-
     // API call
-    const resInput = await getEvaluationForInput(
+    const res = await getEvaluationForInput(
       yTrueFile,
       yPredFile,
       metrics,
@@ -186,12 +184,28 @@ export default function TabPanelInputViewOwn({
       rocAnalysis
     );
 
-    console.log(resInput);
+    console.log(res);
 
-    setEvaluationResults(resInput.results);
-    setEvaluationConfusionMatrices(resInput.cnf_matrices);
-    setEvaluationClassificationReports(resInput.clf_reports);
-    setRocAnalysisRes(resInput.roc_analysis);
+    if (res.results != null) {
+      setEvaluationResults(res.results);
+    }
+
+    if (res.cnf_matrices != null) {
+      setEvaluationConfusionMatrices(res.cnf_matrices);
+    }
+
+    if (res.clf_reports != null) {
+      setEvaluationClassificationReports(res.clf_reports);
+    }
+
+    if (res.roc_analysis != null) {
+      setRocAnalysisRes(res.roc_analysis);
+    }
+
+    // error case
+    if (res.message != null) {
+      alert(res.message);
+    }
 
     // Resetting forms and state values
     document.getElementById("evaluation-input-form").reset();
@@ -221,6 +235,9 @@ export default function TabPanelInputViewOwn({
                 title={
                   <React.Fragment>
                     <Typography color="inherit">Labelvektor y_true</Typography>
+                    <b>{"Priorität: "}</b>
+                    <em>{"obligatorisch"}</em>
+                    <br />
                     <b>{"Dateiformat: "}</b>
                     <em>{"npy (numpy matrix format)"}</em>
                     <br />
@@ -264,6 +281,9 @@ export default function TabPanelInputViewOwn({
                     <Typography color="inherit">
                       Ergebnisvektor y_pred
                     </Typography>
+                    <b>{"Priorität: "}</b>
+                    <em>{"obligatorisch"}</em>
+                    <br />
                     <b>{"Dateiformat: "}</b>
                     <em>{"npy (numpy matrix format)"}</em>
                     <br />

@@ -290,8 +290,14 @@ export default function TabPanelInputComparison({
 
     console.log(res);
 
-    setComparisonResults(res.results);
-    setComparisonDetailed(res.evaluation);
+    if (res.results != null && res.evaluation != null) {
+      setComparisonResults(res.results);
+      setComparisonDetailed(res.evaluation);
+    }
+
+    if (res.message != null) {
+      alert(res.message);
+    }
 
     if (yPred != null && indices != null) {
       setClassifiers([...classifiers, "own"]);
@@ -330,6 +336,9 @@ export default function TabPanelInputComparison({
                 title={
                   <React.Fragment>
                     <Typography color="inherit">Datensatz</Typography>
+                    <b>{"Priorität: "}</b>
+                    <em>{"obligatorisch"}</em>
+                    <br />
                     <b>{"Dateiformat: "}</b>
                     <em>
                       {
@@ -347,7 +356,7 @@ export default function TabPanelInputComparison({
                     <b>{"Beschreibung: "}</b>
                     <em>
                       {
-                        "Datensatz zum trainieren von Vergleichsklassifikatoren."
+                        "Datensatz zum trainieren von Vergleichsklassifikatoren. Die enthaltenen Werte sollten in ein Format gebracht werden, welches von den sklearn Klassifikatoren unterstützt wird (kategorische Werte müssen kodiert werden, etc., für mehr Information siehe Dokumentation)."
                       }
                     </em>
                   </React.Fragment>
@@ -391,6 +400,9 @@ export default function TabPanelInputComparison({
                     <Typography color="inherit">
                       Trainings-/Testindices
                     </Typography>
+                    <b>{"Priorität: "}</b>
+                    <em>{"optional (wenn y_pred nicht vorhanden)"}</em>
+                    <br />
                     <b>{"Dateiformat: "}</b>
                     <em>{"npz (numpy zipped matrix format)"}</em>
                     <br />
@@ -408,7 +420,7 @@ export default function TabPanelInputComparison({
                     <b>{"Beschreibung: "}</b>
                     <em>
                       {
-                        "Trainings- und Testindices der k-fold cross validation Methode, mit welchen der eigene Klassifikator und Vergleichsklassifikatoren trainiert und getestet wurde/werden. "
+                        "Trainings- und Testindices der k-fold cross validation Methode, mit welchen der eigene Klassifikator und Vergleichsklassifikatoren trainiert und getestet wurde/werden. Falls nicht angegeben, wird eine 5x2-fold cross validation durchgeführt."
                       }
                     </em>
                   </React.Fragment>
@@ -452,6 +464,9 @@ export default function TabPanelInputComparison({
                     <Typography color="inherit">
                       Ergebnisvektor y_pred
                     </Typography>
+                    <b>{"Priorität: "}</b>
+                    <em>{"optional"}</em>
+                    <br />
                     <b>{"Dateiformat: "}</b>
                     <em>{"npy (numpy matrix format)"}</em>
                     <br />
@@ -461,7 +476,7 @@ export default function TabPanelInputComparison({
                     <b>{"Beschreibung: "}</b>
                     <em>
                       {
-                        "Ergebnisse des eigenen Klassifikators auf den Sets der k-fold cross validation."
+                        "Ergebnisse des eigenen Klassifikators auf den Sets der k-fold cross validation. Falls nicht angegeben werden nur Vergleichsklassifikatoren evaluiert."
                       }
                     </em>
                   </React.Fragment>
