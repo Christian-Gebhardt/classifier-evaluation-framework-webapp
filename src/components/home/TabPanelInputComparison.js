@@ -75,6 +75,10 @@ const useStyles = makeStyles((theme) => ({
   infoButton: {
     marginBottom: "6px",
   },
+  infoButtonSettings: {
+    marginBottom: "4px",
+    marginLeft: "8px",
+  },
 }));
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -736,6 +740,29 @@ export default function TabPanelInputComparison({
                     onClose={handleCloseSettings}
                   >
                     Parameter der Klassifikatoren
+                    <HtmlTooltip
+                      title={
+                        <React.Fragment>
+                          <Typography color="inherit">
+                            Parameter Einstellungen
+                          </Typography>
+                          <em>
+                            {
+                              "Für mehr Informationen siehe Dokumentation Thesis Kapitel 4, bzw. Scikit Learn Dokumentation der jeweiligen Klassifikatoren: Stochastic Gradient Descent (sgd), Gaussian Naive Bayes (gnb), Decision Tree (dct), Random Forest (rfo) und Multilayer Perceptron (nnm) "
+                            }
+                          </em>
+                        </React.Fragment>
+                      }
+                    >
+                      <IconButton
+                        className={classes.infoButtonSettings}
+                        color="default"
+                        component="span"
+                        size="small"
+                      >
+                        <InfoOutlined />
+                      </IconButton>
+                    </HtmlTooltip>
                   </DialogTitle>
                   <DialogContent dividers>
                     <FormControl className={classes.formControl}>

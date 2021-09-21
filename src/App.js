@@ -32,9 +32,6 @@ function App() {
               <Link href="/" color="inherit">
                 Home
               </Link>
-              <Link href="/tutorial" color="inherit">
-                Tutorial
-              </Link>
               <Link href="/about" color="inherit">
                 Projekt
               </Link>

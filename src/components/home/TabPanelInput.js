@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Paper, Tabs, Tab } from "@material-ui/core";
+import { Tabs, Tab } from "@material-ui/core";
 import TabPanelInputOwn from "./TabPanelInputOwn";
 import TabPanelInputComparison from "./TabPanelInputComparison";
 
@@ -13,18 +13,16 @@ export default function TabPanelInput(props) {
   };
   return (
     <div>
-      <Paper>
-        <Tabs
-          indicatorColor="secondary"
-          textColor="secondary"
-          centered
-          value={view}
-          onChange={handleViewChange}
-        >
-          <Tab label="Eigener" />
-          <Tab label="Vergleich" />
-        </Tabs>
-      </Paper>
+      <Tabs
+        indicatorColor="secondary"
+        textColor="secondary"
+        centered
+        value={view}
+        onChange={handleViewChange}
+      >
+        <Tab label="Eigener" />
+        <Tab label="Vergleich" />
+      </Tabs>
       {view === 0 && (
         <TabPanelInputOwn
           setEvaluationResults={props.setEvaluationResults}

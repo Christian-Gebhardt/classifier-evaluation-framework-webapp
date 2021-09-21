@@ -191,7 +191,7 @@ export default function TabPanelEvaluation({
                     <Bar
                       key={index}
                       dataKey={`score_clf_${name}`}
-                      maxBarSize={100}
+                      maxBarSize={75}
                       fill={getFillColor(name)}
                     />
                   );

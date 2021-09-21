@@ -245,7 +245,7 @@ export default function TabPanelInputViewOwn({
                     <em>{"nx1"}</em>
                     <br />
                     <b>{"Beschreibung: "}</b>
-                    <em>{"Vektor der alle wahren Labelwerte enthält."}</em>
+                    <em>{"Vektor, der alle wahren Labelwerte enthält."}</em>
                   </React.Fragment>
                 }
               >
@@ -297,7 +297,7 @@ export default function TabPanelInputViewOwn({
                     <b>{"Beschreibung: "}</b>
                     <em>
                       {
-                        "Vektor der alle vorhergesagten Labelwerte bzw. die probabilistischen Werte des Klassifikators enthält. Falls probabilistische Werte gewählt werden müssen auch probabilitische Metriken gewählt werden."
+                        "Vektor, der alle vorhergesagten Labelwerte bzw. die probabilistischen Werte des Klassifikators enthält. Falls probabilistische Werte gewählt werden müssen auch probabilitische Metriken gewählt werden."
                       }
                     </em>
                   </React.Fragment>

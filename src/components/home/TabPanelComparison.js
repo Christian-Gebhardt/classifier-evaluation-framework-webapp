@@ -40,6 +40,9 @@ const useStyles = makeStyles({
   tablePaper: {
     marginTop: "25px",
   },
+  headerRow: {
+    fontWeight: 575,
+  },
 });
 
 export default function TabPanelComparison({
@@ -115,18 +118,34 @@ export default function TabPanelComparison({
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>{`Classifier: ${clf}`}</TableCell>
+                          <TableCell
+                            className={classes.headerRow}
+                          >{`Classifier: ${clf}`}</TableCell>
                           {Object.values(detailedCV[clf])[0].map((item, i) => (
-                            <TableCell key={i} align="right">
+                            <TableCell
+                              className={classes.headerRow}
+                              key={i}
+                              align="right"
+                            >
                               {`Set ${i + 1}`}
                             </TableCell>
                           ))}
+                          <TableCell
+                            className={classes.headerRow}
+                            align="right"
+                          >
+                            {"Avg"}
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {Object.keys(detailedCV[clf]).map((metric, i) => (
                           <TableRow key={i}>
-                            <TableCell component="th" scope="row">
+                            <TableCell
+                              className={classes.headerRow}
+                              component="th"
+                              scope="row"
+                            >
                               {`${metric}`}
                             </TableCell>
                             {detailedCV[clf][metric].map((value, i) => (
@@ -134,6 +153,14 @@ export default function TabPanelComparison({
                                 {value.toFixed(2)}
                               </TableCell>
                             ))}
+                            <TableCell key={1} align="right">
+                              {(
+                                detailedCV[clf][metric].reduce(
+                                  (p, c) => p + c,
+                                  0
+                                ) / detailedCV[clf][metric].length
+                              ).toFixed(2)}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
