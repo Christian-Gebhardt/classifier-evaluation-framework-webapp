@@ -1,6 +1,12 @@
-# Getting Started with Create React App
+# Evaluation Framework Webapp
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+### @author Christian Gebhardt, email: christian.gebhardt@uni-bayreuth.de
+
+You will need to have npm installed to run these commands. For a quick setup just run `npm i` and then `npm start`. These commands will install all required packages and start the webserver at http://localhost:3000 in your webbrowser. If the Flask server of the 'Evaluation Framework API' (https://github.com/Christian-Gebhardt/classifier-evaluation-framework-API) is already running you are ready to send requests and use the framework. For more information regarding usage see my bachelor thesis 'Entwicklung eines webbasierten Rahmenwerkes zur Evaluation von Klassifikatoren'. Also when you encounter problems, you can send me an email at christian.gebhardt@uni-bayreuth.de.
 
 ## Available Scripts
 
